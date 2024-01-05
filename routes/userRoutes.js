@@ -19,8 +19,28 @@ app.post("/users/new", (req, res) => {
         jsonfile.writeFile("./DB/users.json", content, function(err) {
             console.log(err);
         });
-        res.send(content);
         res.sendStatus(200);
     });
-}); // Add a closing curly brace here
+}); 
+app.delete("/users/destroy", (req, res) => {
+  let email = req.body.email;
+
+  jsonfile.readFile("./DB/users.json", function(err, content) {
+    if (err) {
+      console.log(err);
+      res.sendStatus(500);
+    } else {
+      let newContent = content.filter(user => user.email !== email);
+
+      jsonfile.writeFile("./DB/users.json", newContent, function(err) {
+        if (err) {
+          console.log(err);
+          res.sendStatus(500);
+        } else {
+          res.sendStatus(200);
+        }
+      });
+    }
+  });
+});
 };
